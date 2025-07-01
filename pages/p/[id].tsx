@@ -6,6 +6,7 @@ import Router from 'next/router'
 import { PostProps } from '../../components/Post'
 
 async function publish(id: number): Promise<void> {
+
   await fetch(`http://localhost:3000/api/publish/${id}`, {
     method: 'PUT',
   })
@@ -20,8 +21,11 @@ async function destroy(id: number): Promise<void> {
 }
 
 const Post: React.FC<PostProps> = props => {
+   if (!props) return <div>Loading...</div>; 
+
+
   let title = props?.title
-  if (!props?.published) {
+  if (!props.published) {
     title = `${title} (Draft)`
   }
 
@@ -30,13 +34,13 @@ const Post: React.FC<PostProps> = props => {
       <div>
         <h2>{title}</h2>
         <p>By {props?.author?.name || 'Unknown author'}</p>
-        <ReactMarkdown children={props.content} />
+        <ReactMarkdown children={props?.content} />
         {!props.published && (
-          <button onClick={() => publish(props.id)}>
+          <button onClick={() => publish(props?.id)}>
             Publish
           </button>
         )}
-        <button onClick={() => destroy(props.id)}>
+        <button onClick={() => destroy(props?.id)}>
           Delete
         </button>
       </div>
@@ -66,7 +70,7 @@ const Post: React.FC<PostProps> = props => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await fetch(`http://localhost:3000/api/post/${context.params.id}`)
+  const res = await fetch(`http://localhost:3000/api/post/${context?.params?.id}`)
   const data = await res.json()
   return { props: { ...data } }
 }
