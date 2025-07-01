@@ -20,8 +20,8 @@ async function destroy(id: number): Promise<void> {
 }
 
 const Post: React.FC<PostProps> = props => {
-  let title = props.title
-  if (!props.published) {
+  let title = props?.title
+  if (!props?.published) {
     title = `${title} (Draft)`
   }
 
